@@ -1,0 +1,5 @@
+if(MSVC)
+add_subdirectory(windows)
+else()
+add_subdirectory(linux)
+endif()
