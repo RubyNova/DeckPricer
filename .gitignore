@@ -153,3 +153,6 @@ internal/dist*
 
 ### local Discord Bot Info ###
 bot-info.json
+
+### Why isn't it ignoring PDBs already??? ###
+*.pdb
