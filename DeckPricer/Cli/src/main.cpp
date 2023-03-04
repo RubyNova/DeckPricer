@@ -1,7 +1,11 @@
 #include <Client.hpp>
 
-int main()
+int main(int argc, char *argv[])
 {
-    DeckPricer::Bot::Client("MTA4MTAwNTY0MDI3ODg4NDQxMw.GmYsK0.eK5VYegQdJ6k4UTyWMwLHAtZ-sP0kbU9IZrLYo");
+    if (argc >= 2)
+    {
+        DeckPricer::Bot::Client::FromJsonFile(std::filesystem::path(std::string(argv[1])));
+    }
+
     return 0;
 }

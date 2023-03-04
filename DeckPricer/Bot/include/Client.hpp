@@ -6,6 +6,7 @@
 #define DECKPRICER_BOT_CLIENT_HPP
 
 #include <dpp/dpp.h>
+#include <filesystem>
 
 namespace DeckPricer::Bot
 {
@@ -15,6 +16,9 @@ namespace DeckPricer::Bot
         dpp::cluster _bot;
 
     public:
+        static Client FromJson(const std::string& jsonString);
+        static Client FromJsonFile(const std::filesystem::path& fileLocation);
+
         Client(const std::string& botToken) noexcept;
     };
 }
