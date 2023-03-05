@@ -5,6 +5,7 @@
 #include <dpp/nlohmann/json.hpp>
 #include <iostream>
 #include <fstream>
+#include <Commands/PingCommand.hpp>
 
 namespace DeckPricer::Bot
 {
@@ -30,17 +31,44 @@ namespace DeckPricer::Bot
 
     Client::Client(const std::string& botToken) noexcept : _bot(botToken)
     {
-        _bot.on_slashcommand([](auto event) {
-            if (event.command.get_command_name() == "ping") {
-                event.reply("Pong!");
-            }
+    }
+
+    void Client::RegisterCommand(Commands::CommandInfo commandInfo)
+    {
+        auto it = std::find_if(_commandsToRegister.begin(), _commandsToRegister.end(), [&](auto obj) { return commandInfo.name == obj.name; });
+
+        if (it != _commandsToRegister.end())
+        {
+            throw std::runtime_error("Command with duplicate name detected. Unique names only.");
+        }
+
+        _commandsToRegister.emplace_back(commandInfo);
+    }
+
+    void Client::RegisterCommand(const std::string &name, const std::string description, std::function<void(const dpp::slashcommand_t &)> fnPtr)
+    {
+        RegisterCommand(Commands::CommandInfo{name, description, fnPtr});
+    }
+
+    void Client::RegisterDefaultCommands()
+    {
+        RegisterCommandType<Commands::PingCommand>();
+    }
+
+    void Client::Start()
+    {
+        _bot.on_slashcommand([&](auto event) {
+            _slashCommands.at(event.command.get_command_name())(event);
         });
  
         _bot.on_ready([&](auto event) {
             if (dpp::run_once<struct register_bot_commands>()) {
-                _bot.global_command_create(
-                    dpp::slashcommand("ping", "Ping pong!", _bot.me.id)
-                );
+
+                for (auto&& info : _commandsToRegister)
+                {
+                    _bot.global_command_create(dpp::slashcommand(info.name, info.description, _bot.me.id));
+                    _slashCommands.emplace(info.name, info.fnPtr);
+                }
             }
         });
  
