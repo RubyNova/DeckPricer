@@ -1,7 +1,6 @@
 // Copyright © Matt Jones and Contributors. Licensed under the MIT Licence (MIT). See LICENCE.md in the repository root
 // for more information.
 
-
 #ifndef DECKPRICER_BOT_COMMANDS_PRICECOMMAND_HPP
 #define DECKPRICER_BOT_COMMANDS_PRICECOMMAND_HPP
 
@@ -25,19 +24,18 @@ namespace DeckPricer::Bot::Commands
 
         [[nodiscard]] inline virtual std::vector<dpp::command_option> GetCommandOptions() const noexcept final
         {
-            return std::vector<dpp::command_option> 
-            {
-                dpp::command_option(dpp::co_string, "ydke", "The YDK Export string", true)
-            };
+            return std::vector<dpp::command_option>{
+                dpp::command_option(dpp::co_string, "ydke", "The YDK Export string", true)};
         }
 
-        inline virtual void Execute(const dpp::slashcommand_t& commandInfo) final
+        inline virtual void Execute(const dpp::slashcommand_t &commandInfo) final
         {
             auto ydkeString = std::get<std::string>(commandInfo.get_parameter("ydke"));
             auto optionalObject = Ydk::YdkeParser::TryGetDeckSections(ydkeString);
 
             if (optionalObject.has_value())
             {
+                auto taken = optionalObject.value();
                 commandInfo.reply("I can't actually use the YDKE data in a meaningful way yet, but I can tell you its a valid URI!");
             }
             else

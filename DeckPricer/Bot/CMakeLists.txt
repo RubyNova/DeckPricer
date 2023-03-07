@@ -6,6 +6,17 @@ set(CORE_SOURCES
 
 add_library(Bot STATIC ${CORE_SOURCES})
 
+set(BASE64_SOURCES
+  thirdparty/base64/base64.cpp
+)
+
+add_library(base64 STATIC ${BASE64_SOURCES})
+target_include_directories(base64
+  PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/thirdparty/base64>
+    $<INSTALL_INTERFACE:include>
+)
+
 target_compile_features(Bot PUBLIC cxx_std_17)
 
 target_compile_options(Bot
@@ -53,3 +64,4 @@ target_include_directories(Bot
 )
 
 target_link_libraries(Bot dpp)
+target_link_libraries(Bot base64)
