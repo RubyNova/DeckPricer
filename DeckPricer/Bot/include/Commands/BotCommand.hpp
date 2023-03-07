@@ -7,6 +7,7 @@
 
 #include <dpp/dpp.h>
 #include "CommandInfo.hpp"
+#include <vector>
 
 namespace DeckPricer::Bot::Commands
 {
@@ -14,12 +15,13 @@ namespace DeckPricer::Bot::Commands
     {
         public:
         [[nodiscard]] virtual std::string GetCommandName() const noexcept = 0;
-        [[nodiscard]] virtual std::string GetCommandDescription() const noexcept = 0;
+        [[nodiscard]] virtual std::string GetCommandDescription() const noexcept = 0; 
+        [[nodiscard]] inline virtual std::vector<dpp::command_option> GetCommandOptions() const noexcept { return std::vector<dpp::command_option>{}; };
         virtual void Execute(const dpp::slashcommand_t& commandInfo) = 0;
-
+        
         inline operator CommandInfo() const noexcept
         {
-            return CommandInfo{GetCommandName(), GetCommandDescription(), [this](auto commandInfo) { const_cast<BotCommand*>(this)->Execute(commandInfo); }};
+            return CommandInfo{GetCommandName(), GetCommandDescription(), GetCommandOptions(), [this](auto commandInfo) { const_cast<BotCommand*>(this)->Execute(commandInfo); }};
         }
     };
 }

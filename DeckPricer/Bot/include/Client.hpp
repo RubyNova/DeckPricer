@@ -28,7 +28,7 @@ namespace DeckPricer::Bot
 
         Client(const std::string& botToken) noexcept;
         void RegisterCommand(Commands::CommandInfo commandInfo);
-        void RegisterCommand(const std::string& name, const std::string description, std::function<void(const dpp::slashcommand_t&)> fnPtr);
+        void RegisterCommand(const std::string& name, const std::string description, std::vector<dpp::command_option> options, std::function<void(const dpp::slashcommand_t&)> fnPtr);
         
         template<typename TCommand, typename... Args>
         void RegisterCommandType(Args&&... args)

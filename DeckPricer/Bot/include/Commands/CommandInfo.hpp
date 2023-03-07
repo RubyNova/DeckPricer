@@ -15,6 +15,7 @@ namespace DeckPricer::Bot::Commands
     {
         std::string name;
         std::string description;
+        std::vector<dpp::command_option> commandOptions;
         std::function<void(const dpp::slashcommand_t&)> fnPtr;
     };
 }

@@ -6,6 +6,7 @@
 #include <iostream>
 #include <fstream>
 #include <Commands/PingCommand.hpp>
+#include <Commands/PriceCommand.hpp>
 
 namespace DeckPricer::Bot
 {
@@ -45,18 +46,20 @@ namespace DeckPricer::Bot
         _commandsToRegister.emplace_back(commandInfo);
     }
 
-    void Client::RegisterCommand(const std::string &name, const std::string description, std::function<void(const dpp::slashcommand_t &)> fnPtr)
+    void Client::RegisterCommand(const std::string &name, const std::string description, std::vector<dpp::command_option> options, std::function<void(const dpp::slashcommand_t &)> fnPtr)
     {
-        RegisterCommand(Commands::CommandInfo{name, description, fnPtr});
+        RegisterCommand(Commands::CommandInfo{name, description, options, fnPtr});
     }
 
     void Client::RegisterDefaultCommands()
     {
         RegisterCommandType<Commands::PingCommand>();
+        RegisterCommandType<Commands::PriceCommand>();
     }
 
     void Client::Start()
     {
+        _bot.on_log([](dpp::log_t log) { std::cout << log.message << std::endl; });
         _bot.on_slashcommand([&](auto event) {
             _slashCommands.at(event.command.get_command_name())(event);
         });
@@ -66,9 +69,27 @@ namespace DeckPricer::Bot
 
                 for (auto&& info : _commandsToRegister)
                 {
-                    _bot.global_command_create(dpp::slashcommand(info.name, info.description, _bot.me.id));
+                    dpp::slashcommand command(info.name, info.description, _bot.me.id);
+                    auto& options = info.commandOptions;
+                    
+                    for(auto&& option : options)
+                    {
+                        command.add_option(option);
+                    }
+
+                    _bot.global_command_create(command);
                     _slashCommands.emplace(info.name, info.fnPtr);
                 }
+
+/*
+                auto bla = _bot.global_commands_get_sync();
+
+                for (auto [key, value] : bla)
+                { 
+                    _bot.global_command_delete_sync(key);
+                }
+
+                */
             }
         });
  
