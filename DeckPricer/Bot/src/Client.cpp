@@ -7,6 +7,7 @@
 #include <fstream>
 #include <Commands/PingCommand.hpp>
 #include <Commands/PriceCommand.hpp>
+#include <Commands/SearchCommand.hpp>
 
 namespace DeckPricer::Bot
 {
@@ -55,11 +56,12 @@ namespace DeckPricer::Bot
     {
         RegisterCommandType<Commands::PingCommand>();
         RegisterCommandType<Commands::PriceCommand>();
+        RegisterCommandType<Commands::SearchCommand>();
     }
 
     void Client::Start()
     {
-        _bot.on_log([](dpp::log_t log) { std::cout << log.message << std::endl; });
+        _bot.on_log([](dpp::log_t log) { std::cerr << log.message << std::endl; });
         _bot.on_slashcommand([&](auto event) {
             _slashCommands.at(event.command.get_command_name())(event);
         });
