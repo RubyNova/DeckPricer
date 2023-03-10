@@ -25,9 +25,9 @@ namespace DeckPricer::Bot::Ydk
     class YdkeParser
     {
     private:
-        [[nodiscard]] static inline std::vector<uint32_t> ByteToIdArray(const std::string &inputData) noexcept
+        [[nodiscard]] static inline std::vector<uint32_t> ByteToIdArray(const std::string& inputData) noexcept
         {
-            const char *array = inputData.c_str();
+            const char* array = inputData.c_str();
             const size_t length = inputData.size();
             std::vector<uint32_t> decoded(length / sizeof(uint32_t));
             std::memcpy(decoded.data(), array, length);
@@ -35,7 +35,7 @@ namespace DeckPricer::Bot::Ydk
         }
 
     public:
-        [[nodiscard]] static inline std::optional<SlicedDeckData> TryGetDeckSections(const std::string &inputData) noexcept
+        [[nodiscard]] static inline std::optional<SlicedDeckData> TryGetDeckSections(const std::string& inputData) noexcept
         {
             static std::regex ydkeRegex("ydke://[A-Za-z0-9+/=]*?![A-Za-z0-9+/=]*?![A-Za-z0-9+/=]*?!", std::regex_constants::ECMAScript);
 

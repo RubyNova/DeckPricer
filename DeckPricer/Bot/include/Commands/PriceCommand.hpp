@@ -9,7 +9,7 @@
 
 namespace DeckPricer::Bot::Commands
 {
-    class PriceCommand final : public BotCommand
+    class PriceCommand final: public BotCommand
     {
     public:
         [[nodiscard]] virtual inline std::string GetCommandName() const noexcept final
@@ -28,14 +28,13 @@ namespace DeckPricer::Bot::Commands
                 dpp::command_option(dpp::co_string, "ydke", "The YDK Export string", true)};
         }
 
-        inline virtual void Execute(const dpp::slashcommand_t &commandInfo) final
+        inline virtual void Execute(const dpp::slashcommand_t& commandInfo) final
         {
             auto ydkeString = std::get<std::string>(commandInfo.get_parameter("ydke"));
             auto optionalObject = Ydk::YdkeParser::TryGetDeckSections(ydkeString);
 
             if (optionalObject.has_value())
             {
-                auto taken = optionalObject.value();
                 commandInfo.reply("I can't actually use the YDKE data in a meaningful way yet, but I can tell you its a valid URI!");
             }
             else
