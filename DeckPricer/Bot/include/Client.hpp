@@ -35,7 +35,7 @@ namespace DeckPricer::Bot
         {
             static_assert(std::is_base_of_v<Commands::BotCommand, TCommand>, "TCommand must be of type Commands::BotCommand");
 
-            auto command = std::make_unique<TCommand>(std::forward(args)...);
+            auto command = std::make_unique<TCommand>(args...);
             _commandObjectCache.emplace_back(std::move(command));
             RegisterCommand(*_commandObjectCache.back());
         }

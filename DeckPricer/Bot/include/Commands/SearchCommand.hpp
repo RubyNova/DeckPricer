@@ -6,6 +6,7 @@
 #define  DECKPRICER_BOT_COMMANDS_SEARCHCOMMAND_HPP
 
 #include "BotCommand.hpp"
+#include <dpp/nlohmann/json.hpp>
 
 namespace DeckPricer::Bot::Commands
 {
@@ -18,7 +19,12 @@ namespace DeckPricer::Bot::Commands
         static inline const std::string EbayUS = "price_info_source_ebay_us";
         static inline const std::string AmazonUS = "price_info_source_amazon_us";
         static inline const std::string CoolStuffInc = "price_info_source_coolstuffinc";
+
+        dpp::cluster& _bot;
+
     public:
+        explicit SearchCommand(dpp::cluster& bot) noexcept : BotCommand(), _bot(bot) {}
+
         [[nodiscard]] virtual inline std::string GetCommandName() const noexcept final
         {
             return "search";
@@ -58,7 +64,22 @@ namespace DeckPricer::Bot::Commands
                 }
             }, priceInfoSource);
 
-            commandInfo.reply(priceInfoSourceOutput);
+            commandInfo.thinking();
+
+            // TODO: am I missing something?
+            _bot.request("https://db.ygoprodeck.com/api/v7/cardinfo.php?name=" + cardName, dpp::m_get, [commandInfoCopy = commandInfo](const dpp::http_request_completion_t& response) mutable {
+                //creatorOfCommand->interaction_response_edit(token, dpp::message(channelId, "If I see this, that means I didn't crash!", dpp::message_type::mt_application_command));
+                
+                auto j = json::parse(response.body);
+                auto& obj = j["data"][0];
+                auto id = obj.value<uint64_t>("id", 0);
+                auto name = obj.value<std::string>("name", std::string());
+                auto type = obj.value<std::string>("type", std::string());
+
+                std::string returnObj = "Card ID: " + std::to_string(id) + ", " + "Name: " + name + ", " + "Type: " + type;
+
+                commandInfoCopy.edit_response(returnObj);
+            });
         }
     };
 }
