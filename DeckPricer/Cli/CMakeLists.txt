@@ -52,5 +52,4 @@ target_include_directories(Cli
 
 target_link_libraries(Cli Bot)
 
-
 add_custom_command(TARGET Cli POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy_directory $<TARGET_FILE_DIR:dpp> $<TARGET_FILE_DIR:Cli>)

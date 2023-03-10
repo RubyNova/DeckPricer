@@ -1,3 +1,0 @@
-[submodule "DeckPricer/Bot/thirdparty/base64"]
-	path = DeckPricer/Bot/thirdparty/base64
-	url = https://github.com/ReneNyffenegger/cpp-base64
