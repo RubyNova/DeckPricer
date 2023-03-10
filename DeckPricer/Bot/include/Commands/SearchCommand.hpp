@@ -66,10 +66,7 @@ namespace DeckPricer::Bot::Commands
 
             commandInfo.thinking();
 
-            // TODO: am I missing something?
             _bot.request("https://db.ygoprodeck.com/api/v7/cardinfo.php?name=" + cardName, dpp::m_get, [commandInfoCopy = commandInfo](const dpp::http_request_completion_t& response) mutable {
-                //creatorOfCommand->interaction_response_edit(token, dpp::message(channelId, "If I see this, that means I didn't crash!", dpp::message_type::mt_application_command));
-                
                 auto j = json::parse(response.body);
                 auto& obj = j["data"][0];
                 auto id = obj.value<uint64_t>("id", 0);
