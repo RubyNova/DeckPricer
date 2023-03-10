@@ -52,4 +52,4 @@ target_include_directories(Bot
     $<INSTALL_INTERFACE:include>
 )
 
-target_link_libraries(Bot dpp)
+target_link_libraries(Bot dpp base64)
