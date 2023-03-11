@@ -5,13 +5,8 @@
 #define DECKPRICER_YDK_YDKEPARSER_HPP
 
 #include <optional>
-#include <regex>
-#include <string>
-#include <sstream>
 #include <vector>
-#include "../Utilities/StringHelpers.hpp"
-#include <iostream>
-#include <base64.h>
+#include <string>
 
 namespace DeckPricer::Bot::Ydk
 {
@@ -25,56 +20,10 @@ namespace DeckPricer::Bot::Ydk
     class YdkeParser
     {
     private:
-        [[nodiscard]] static inline std::vector<uint32_t> ByteToIdArray(const std::string& inputData) noexcept
-        {
-            const char* array = inputData.c_str();
-            const size_t length = inputData.size();
-            std::vector<uint32_t> decoded(length / sizeof(uint32_t));
-            std::memcpy(decoded.data(), array, length);
-            return decoded;
-        }
+        [[nodiscard]] static std::vector<uint32_t> ByteToIdArray(const std::string& inputData) noexcept;
 
     public:
-        [[nodiscard]] static inline std::optional<SlicedDeckData> TryGetDeckSections(const std::string& inputData) noexcept
-        {
-            static std::regex ydkeRegex("ydke://[A-Za-z0-9+/=]*?![A-Za-z0-9+/=]*?![A-Za-z0-9+/=]*?!", std::regex_constants::ECMAScript);
-
-            std::smatch m;
-            std::regex_search(inputData, m, ydkeRegex);
-
-            if (m.size() != 1)
-            {
-                return std::nullopt;
-            }
-
-            auto substringData = Utilities::StringHelpers::RemoveSubstring(inputData, "ydke://");
-
-            std::stringstream dataStream(substringData);
-            std::string segment;
-            std::vector<std::string> output{};
-
-            while (std::getline(dataStream, segment, '!'))
-            {
-                output.emplace_back(segment);
-            }
-
-            if (output.size() != 3)
-            {
-                return std::nullopt;
-            }
-
-            auto main = base64_decode(output[0], false);
-            auto extra = base64_decode(output[1], false);
-            auto side = base64_decode(output[2], false);
-
-            SlicedDeckData deckData;
-
-            deckData.main = ByteToIdArray(main);
-            deckData.extra = ByteToIdArray(extra);
-            deckData.side = ByteToIdArray(side);
-
-            return deckData;
-        }
+        [[nodiscard]] static std::optional<SlicedDeckData> TryGetDeckSections(const std::string& inputData) noexcept; 
     };
 }
 

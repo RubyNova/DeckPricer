@@ -55,7 +55,7 @@ namespace DeckPricer::Bot
     void Client::RegisterDefaultCommands()
     {
         RegisterCommandType<Commands::PingCommand>();
-        RegisterCommandType<Commands::PriceCommand>();
+        RegisterCommandType<Commands::PriceCommand>(_bot);
         RegisterCommandType<Commands::SearchCommand>(_bot);
     }
 

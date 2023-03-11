@@ -1,10 +1,11 @@
 add_subdirectory(thirdparty)
 
-set(CORE_SOURCES
+set(BOT_SOURCES
     src/Client.cpp
+    src/Ydk/YdkeParser.cpp
 )
 
-add_library(Bot STATIC ${CORE_SOURCES})
+add_library(Bot STATIC ${BOT_SOURCES})
 
 target_compile_features(Bot PUBLIC cxx_std_17)
 
